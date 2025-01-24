@@ -12,8 +12,9 @@
 //       setResult('');
 //     } else if (value === '=') {
 //       try {
-//         // Use math.js evaluate function to safely evaluate the expression
-//         const safeResult = evaluate(input);
+//         // Remove underscores from the input before evaluating
+//         const sanitizedInput = input.replace(/_/g, '');
+//         const safeResult = evaluate(sanitizedInput);
 //         setResult(safeResult.toString());
 //       } catch {
 //         setResult('Error');
@@ -30,10 +31,15 @@
 //         <div className="result">{result}</div>
 //       </div>
 //       <div className="buttons">
-//         {['1', '2', '3', '+', '4', '5', '6', '-', '7', '8', '9', '*', 'C', '0', '=', '/'].map((btn) => (
+//         {[
+//           '1', '2', '3', '+', 
+//           '4', '5', '6', '-', 
+//           '7', '8', '9', '*', 
+//           'C', '0', '=', '/', '_'
+//         ].map((btn) => (
 //           <button
 //             key={btn}
-//             className={btn === 'C' ? 'clear' : ''}
+//             className={`btn ${btn === 'C' ? 'clear' : ''}`}
 //             onClick={() => handleClick(btn)}
 //           >
 //             {btn}
@@ -56,15 +62,23 @@ const Calculator = () => {
   const [input, setInput] = useState('');
   const [result, setResult] = useState('');
 
+  // Function to format numbers with underscores
+  const formatWithUnderscores = (number) => {
+    return number
+      .toString()
+      .replace(/\B(?=(\d{3})+(?!\d))/g, '_'); // Adds underscores as thousand separators
+  };
+
   const handleClick = (value) => {
     if (value === 'C') {
       setInput('');
       setResult('');
     } else if (value === '=') {
       try {
-        // Use math.js to evaluate the input safely
-        const safeResult = evaluate(input);
-        setResult(safeResult.toString());
+        // Remove underscores from the input before evaluating
+        const sanitizedInput = input.replace(/_/g, '');
+        const safeResult = evaluate(sanitizedInput);
+        setResult(formatWithUnderscores(safeResult));
       } catch {
         setResult('Error');
       }
@@ -80,7 +94,12 @@ const Calculator = () => {
         <div className="result">{result}</div>
       </div>
       <div className="buttons">
-        {['1', '2', '3', '+', '4', '5', '6', '-', '7', '8', '9', '*', 'C', '0', '=', '/'].map((btn) => (
+        {[
+          '1', '2', '3', '+', 
+          '4', '5', '6', '-', 
+          '7', '8', '9', '*', 
+          'C', '0', '=', '/', '_'
+        ].map((btn) => (
           <button
             key={btn}
             className={`btn ${btn === 'C' ? 'clear' : ''}`}
@@ -95,4 +114,3 @@ const Calculator = () => {
 };
 
 export default Calculator;
-
